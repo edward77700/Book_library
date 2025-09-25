@@ -14,7 +14,9 @@
   "description": "",
   "dependencies": {
     "fastify": "^5.6.1",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
     "@types/node": "^24.5.2",
