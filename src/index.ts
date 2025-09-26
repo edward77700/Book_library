@@ -39,6 +39,11 @@ server.setErrorHandler((error, request, reply) => {
         error: "Bad Request",
         message,
       });
+    } else if (error.code === "23503") {
+        // Foreign key violation
+        return reply.status(400).send({
+          message: "Cannot delete this author because they still have published books."
+        });
     } else {
       // default
       reply.send(error);
@@ -49,9 +54,12 @@ server.setErrorHandler((error, request, reply) => {
 server.register(authorRoutes);
 server.register(bookRoutes);
 
+const PORT = Number(process.env.PORT) || 3001;
+const HOST = process.env.HOST || "0.0.0.0";
+
 AppDataSource.initialize().then(() => {
     console.log("Data Source has been initialized!");
-    server.listen({ port: 3001 }, (err, address) => {
+    server.listen({ port: PORT, host: HOST }, (err, address) => {
         if (err) {
             console.error(err);
             process.exit(1);
