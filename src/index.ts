@@ -11,8 +11,10 @@ const server = fastify();
 
 // set cors settings
 server.register(cors, {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: ['https://book-library-frontend-steel.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 });
 
 // set error msg for validation
