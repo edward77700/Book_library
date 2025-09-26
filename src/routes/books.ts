@@ -44,10 +44,13 @@ export async function bookRoutes(fastify: FastifyInstance) {
         reply.send(books);
     });
 
-    fastify.get("/books/:id", async (request, reply) => {
-        const id = (request.params as any).id;
-        const book = await bookService.findOne(id);
-        reply.send(book);
+    fastify.get<{Params: BookParams}>(
+        "/books/:id", 
+        { schema: {params: bookSchemeParams}},
+        async (request, reply) => {
+            const { id } = request.params;
+            const book = await bookService.findOne(Number(id));
+            reply.send(book);
     });
 
     fastify.post<{ Body: CreateBookBody }>(
@@ -71,9 +74,12 @@ export async function bookRoutes(fastify: FastifyInstance) {
     });
 
 
-    fastify.delete("/books/:id", async (request, reply) => {
-        const id = (request.params as any).id;
-        await bookService.delete(id);
-        reply.send({ message: "Book deleted" });
+    fastify.delete<{ Params: BookParams }>(
+        "/books/:id",
+        { schema: {params: bookSchemeParams}},
+        async (request, reply) => {
+            const { id } = request.params;
+            await bookService.delete(Number(id));
+            reply.send({ message: "Book deleted" });
     });
 }

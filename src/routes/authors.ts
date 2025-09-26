@@ -34,15 +34,18 @@ const updateAuthorScheme = {
 export async function authorRoutes(fastify: FastifyInstance) {
     const authorService = new AuthorService();
 
-    fastify.get("/authors", async (request, reply) => {
+    fastify.get("/authors", async (_request, reply) => {
         const authors = await authorService.findAll();
         reply.send(authors);
     });
 
-    fastify.get("/authors/:id", async (request, reply) => {
-        const id = (request.params as any).id;
-        const author = await authorService.findOne(id);
-        reply.send(author);
+    fastify.get<{ Params: AuthorParams }>(
+        "/authors/:id", 
+        {schema: { params: authorSchemeParams }},
+        async (request, reply) => {
+            const { id } = request.params;
+            const author = await authorService.findOne(Number(id));
+            reply.send(author);
     });
 
     fastify.post<{ Body: CreateAuthorBody }>(
@@ -67,9 +70,12 @@ export async function authorRoutes(fastify: FastifyInstance) {
         }
     );
 
-    fastify.delete("/authors/:id", async (request, reply) => {
-        const id = (request.params as any).id;
-        await authorService.delete(id);
-        reply.send({ message: "Author deleted" });
+    fastify.delete<{ Params: AuthorParams }>(
+        "/authors/:id",
+        {schema: { params: authorSchemeParams }},
+        async (request, reply) => {
+            const { id } = request.params;
+            await authorService.delete(Number(id));
+            reply.send({ message: "Author deleted" });
     });
 }
